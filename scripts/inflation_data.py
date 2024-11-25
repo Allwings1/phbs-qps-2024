@@ -2,18 +2,18 @@ import pandas as pd
 import pandas_datareader.data as web
 from datetime import datetime
 def fetch_cpi_data():
-    # 定义数据获取的时间范围
+    # Define the start and end date for data fetching
     start_date = "2018-01-01"
     end_date = datetime.today().strftime('%Y-%m-%d')
 
-    # 从 FRED (Federal Reserve Economic Data) 获取 CPI 数据
+    # Fetch CPI data from FRED (Federal Reserve Economic Data)
     cpi = web.DataReader("CPIAUCSL", "fred", start_date, end_date)
-    cpi = cpi.resample('Q').mean()  # 按季度重新采样计算平均值
+    cpi = cpi.resample('Q').mean()  # Resample to quarterly average
 
-    # 计算过去四个季度的通胀率（同比变化百分比）
+    # Calculate inflation as % change over the past 4 quarters
     cpi['Inflation (%)'] = cpi['CPIAUCSL'].pct_change(periods=4) * 100
 
-    # 返回最近四个季度的通胀数据
+    # Return the last 4 quarters of inflation data
     return cpi.iloc[-4:]
 
 if __name__ == "__main__":
